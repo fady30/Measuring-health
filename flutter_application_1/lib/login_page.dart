@@ -1,7 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/io_client.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
+
+  Future<void> _handleLogin() async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://localhost:3000/hashing'),
+        body: {'username': 'test', 'password': '123'},
+      );
+
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +33,14 @@ class LoginPage extends StatelessWidget {
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 30),
-
               _buildInputField("Username:"),
               const SizedBox(height: 20),
-
               _buildInputField("Password:", isPassword: true),
               const SizedBox(height: 20),
-
-              ElevatedButton(onPressed: () {}, child: const Text("Login")),
+              ElevatedButton(
+                onPressed: _handleLogin,
+                child: const Text("Login"),
+              ),
             ],
           ),
         ),
