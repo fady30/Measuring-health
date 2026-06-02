@@ -1,0 +1,460 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-0001-4a2b-9c3d-measurehealth01",
+    "name": "Measuring Health API",
+    "description": "Volledige collectie voor de Measuring Health API.\n\nGebruik:\n1. Zet 'baseUrl' goed (standaard http://localhost:3000).\n2. Auth > Register of Auth > Login. Login slaat automatisch accessToken en refreshToken op.\n3. Devices > Create Device slaat automatisch deviceId op (nodig voor Health Data > Create).\n4. Alle beveiligde requests gebruiken automatisch Bearer {{accessToken}}.\n\nSeed-accounts (wachtwoord: Wachtwoord123!): alice@measure-health.test en bob@measure-health.test.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "deviceId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "notificationId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"naam\": \"Carol Nieuw\",\n  \"email\": \"carol@measure-health.test\",\n  \"password\": \"Password123\",\n  \"geboortedatum\": \"2012-03-03\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Maakt een nieuwe gebruiker aan. Wachtwoord wordt server-side met Argon2id gehasht. Geeft 201."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 201', () => pm.response.to.have.status(201));",
+                  "pm.test('geen passwordHash in response', () => pm.expect(pm.response.text()).to.not.include('passwordHash'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alice@measure-health.test\",\n  \"password\": \"Wachtwoord123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Logt in en geeft 200 met accessToken en refreshToken. Bij foute gegevens 401 met generieke melding. Na 5 mislukte pogingen wordt het account 15 minuten geblokkeerd (403)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) { pm.collectionVariables.set('accessToken', json.accessToken); }",
+                  "if (json.refreshToken) { pm.collectionVariables.set('refreshToken', json.refreshToken); }",
+                  "pm.test('accessToken ontvangen', () => pm.expect(json.accessToken).to.be.a('string'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Refresh",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh"]
+            },
+            "description": "Wisselt een geldig refresh token in voor nieuwe tokens (rotatie). Het oude refresh token wordt ongeldig."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "if (json.accessToken) { pm.collectionVariables.set('accessToken', json.accessToken); }",
+                  "if (json.refreshToken) { pm.collectionVariables.set('refreshToken', json.refreshToken); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Maakt de sessie van het meegegeven refresh token ongeldig."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me"]
+            },
+            "description": "Eigen profiel en instellingen. Vereist Bearer accessToken."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('geen passwordHash', () => pm.expect(pm.response.text()).to.not.include('passwordHash'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update me",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"naam\": \"Alice Bijgewerkt\",\n  \"thema\": \"donker\",\n  \"notificatiesAan\": false,\n  \"dagelijksStappendoel\": 12000,\n  \"taal\": \"nl\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "me"]
+            },
+            "description": "Werk eigen profiel en/of instellingen bij. Alle velden zijn optioneel."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Devices",
+      "item": [
+        {
+          "name": "Create Device",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"naam\": \"Wearable Test\",\n  \"macAdres\": \"AA:BB:CC:DD:EE:99\",\n  \"firmwareVersie\": \"2.0.0\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/devices",
+              "host": ["{{baseUrl}}"],
+              "path": ["devices"]
+            },
+            "description": "Koppelt een wearable aan de ingelogde gebruiker. Slaat de nieuwe deviceId op voor Health Data > Create. macAdres moet uniek zijn (anders 409)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 201', () => pm.response.to.have.status(201));",
+                  "const json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('deviceId', json.id); }",
+                  "pm.test('deviceId opgeslagen', () => pm.expect(json.id).to.be.a('string'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Health Data",
+      "item": [
+        {
+          "name": "Create Health Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deviceId\": \"{{deviceId}}\",\n  \"stappen\": 9500,\n  \"hartslag\": 78,\n  \"slaapuren\": 7.5,\n  \"gemetenOp\": \"2026-06-01T08:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/health-data",
+              "host": ["{{baseUrl}}"],
+              "path": ["health-data"]
+            },
+            "description": "Slaat een meting op. De gebruiker wordt uit het JWT bepaald. Het device moet van de ingelogde gebruiker zijn, anders 403. Maak eerst een device aan via Devices > Create Device."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Health Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health-data?van=2026-05-01&tot=2026-06-30",
+              "host": ["{{baseUrl}}"],
+              "path": ["health-data"],
+              "query": [
+                { "key": "van", "value": "2026-05-01", "disabled": true },
+                { "key": "tot", "value": "2026-06-30", "disabled": true }
+              ]
+            },
+            "description": "Uitsluitend de eigen metingen, met optionele datumfilters 'van' en 'tot' (vink ze aan in de Params-tab om te filteren)."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('response is een array', () => pm.expect(pm.response.json()).to.be.an('array'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Goals",
+      "item": [
+        {
+          "name": "Create Goal",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"stappen\",\n  \"streefwaarde\": 10000,\n  \"actief\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/goals",
+              "host": ["{{baseUrl}}"],
+              "path": ["goals"]
+            },
+            "description": "Maakt een persoonlijk doel aan voor de ingelogde gebruiker."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Goals",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/goals",
+              "host": ["{{baseUrl}}"],
+              "path": ["goals"]
+            },
+            "description": "Eigen doelen, inclusief dagelijkse voortgang."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notifications",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications"]
+            },
+            "description": "Eigen meldingen. Slaat de eerste notificationId op voor Mark as read."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "if (Array.isArray(json) && json.length > 0) { pm.collectionVariables.set('notificationId', json[0].id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Mark as read",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/notifications/{{notificationId}}/read",
+              "host": ["{{baseUrl}}"],
+              "path": ["notifications", "{{notificationId}}", "read"]
+            },
+            "description": "Markeert een eigen melding als gelezen. Voer eerst Get Notifications uit zodat notificationId gevuld is."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('status is 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

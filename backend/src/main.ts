@@ -1,16 +1,32 @@
-import { NestFactory } from '@nestjs/core';
+import 'reflect-metadata';
+import {
+  ClassSerializerInterceptor,
+  Logger,
+  ValidationPipe,
+} from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as fs from 'fs';
-import * as https from 'https';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 
-async function bootstrap() {
-  const httpsOptions = {
-    key: fs.readFileSync('./key.pem'),
-    cert: fs.readFileSync('./cert.pem'),
-  };
+async function bootstrap(): Promise<void> {
+  const app = await NestFactory.create(AppModule);
 
-  const app = await NestFactory.create(AppModule, { httpsOptions });
-  app.enableCors();
-  await app.listen(3000);
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalFilters(new AllExceptionsFilter());
+
+  const configService = app.get(ConfigService);
+  const port = Number(configService.get<string>('PORT') ?? '3000');
+  await app.listen(port);
+
+  Logger.log(`API gestart op poort ${port}`, 'Bootstrap');
 }
-bootstrap();
+
+void bootstrap();

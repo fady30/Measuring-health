@@ -1,98 +1,72 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Measuring Health API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Centrale NestJS API voor de Measuring Health applicatie. Ontsluit een PostgreSQL-database voor de webapplicatie, de Flutter-app en de ESP32-wearable.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Stack
 
-## Description
+- NestJS (TypeScript)
+- PostgreSQL met TypeORM (migraties, geen `synchronize` in productie)
+- JWT access- en refresh-tokens
+- Argon2id voor wachtwoordhashing
+- Validatie met class-validator via een globale `ValidationPipe`
+- Docker en docker-compose
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+## Lokaal draaien
 
 ```bash
-$ npm install
+cp .env.example .env
+npm install
+docker compose up -d db
+npm run migration:run
+npm run seed
+npm run start:dev
 ```
 
-## Compile and run the project
+De API draait standaard op `http://localhost:3000`.
+
+## Volledig via Docker
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+cp .env.example .env
+docker compose up --build
+docker compose exec api npm run seed:prod
 ```
 
-## Run tests
+De migraties draaien automatisch bij het starten van de api-container.
 
-```bash
-# unit tests
-$ npm run test
+## Belangrijke scripts
 
-# e2e tests
-$ npm run test:e2e
+| Script | Omschrijving |
+| --- | --- |
+| `npm run start:dev` | Start de API met watch-mode |
+| `npm run build` | Compileert naar `dist/` |
+| `npm run migration:run` | Voert de migraties uit (lokaal, ts-node) |
+| `npm run migration:revert` | Draait de laatste migratie terug |
+| `npm run seed` | Vult de database met testgebruikers en voorbeelddata |
 
-# test coverage
-$ npm run test:cov
-```
+## Endpoints
 
-## Deployment
+| Methode | Pad | Beveiligd |
+| --- | --- | --- |
+| POST | `/auth/register` | nee |
+| POST | `/auth/login` | nee |
+| POST | `/auth/refresh` | nee |
+| POST | `/auth/logout` | nee |
+| GET | `/users/me` | ja |
+| PATCH | `/users/me` | ja |
+| POST | `/health-data` | ja |
+| GET | `/health-data` | ja |
+| POST | `/goals` | ja |
+| GET | `/goals` | ja |
+| POST | `/devices` | ja |
+| GET | `/notifications` | ja |
+| PATCH | `/notifications/:id/read` | ja |
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Seed-accounts
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Na `npm run seed` bestaan twee testgebruikers met wachtwoord `Wachtwoord123!`:
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+- `alice@measure-health.test`
+- `bob@measure-health.test`
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Gebruik ze om data-isolatie te controleren: met het token van Alice mag je nooit de health-data van Bob kunnen ophalen.

@@ -1,0 +1,87 @@
+# ==========================================
+# NestJS / Node.js
+# ==========================================
+# Dependencies
+node_modules/
+/dist
+/bld
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime data / Testing
+.pids
+*.pid
+*.seed
+*.pid.lock
+/coverage
+/.nyc_output
+
+# IDEs and editors (Node specific)
+.project
+.classpath
+.cproject
+
+# NestJS specific
+.nestjs.cli.json
+
+# ==========================================
+# Flutter / Dart
+# ==========================================
+# Tooling outputs
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Android specific
+android/app/local.properties
+android/app/generated_plugin_registrant.gradle
+android/.gradle/
+android/captures/
+android/assets/
+
+# iOS/macOS specific
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/Flutter.podspec
+ios/Pods/
+ios/.symlinks/
+macos/Flutter/Generated.xcconfig
+macos/Flutter/flutter_export_environment.sh
+macos/Pods/
+macos/.symlinks/
+
+# Web specific
+build/web/
+
+# ==========================================
+# Algemeen / Omgeving (Cruciaal!)
+# ==========================================
+# Lokale omgevingsvariabelen (bevatten API keys, wachtwoorden, etc.)
+.env
+.env.production
+.env.development
+.env.local
+*.env
+
+# IDE - VS Code
+.vscode/
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# IDE - IntelliJ / Android Studio
+.idea/
+*.iml
+
+# OS generated files
+.DS_Store
+Thumbs.db
