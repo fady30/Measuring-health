@@ -19,4 +19,4 @@ import { UserModule } from '../users/user.module';
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
 })
-export class AuthModule {}
+export class AuthModule { }

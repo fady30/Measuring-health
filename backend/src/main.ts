@@ -21,12 +21,16 @@ async function bootstrap(): Promise<void> {
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.useGlobalFilters(new AllExceptionsFilter());
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
 
   const configService = app.get(ConfigService);
   const port = Number(configService.get<string>('PORT') ?? '3000');
   await app.listen(port);
 
-  Logger.log(`API gestart op poort ${port}`, 'Bootstrap');
+  Logger.log(`API gestart op poort ${port}, Bootstrap`);
 }
 
 void bootstrap();

@@ -28,7 +28,7 @@ const MAX_FAILED_ATTEMPTS = 5;
 const LOCK_WINDOW_MS = 15 * 60 * 1000;
 const INVALID_CREDENTIALS_MESSAGE = 'Ongeldige inloggegevens.';
 const ACCOUNT_LOCKED_MESSAGE =
-  'Account is tijdelijk geblokkeerd door te veel mislukte pogingen.';
+  'Je account is geblokkeerd. Je moet contact opnemen met ons nummer 064528265.';
 const INVALID_TOKEN_MESSAGE = 'Ongeldige of verlopen sessie.';
 
 interface LogoutResponse {
@@ -45,7 +45,7 @@ export class AuthService {
     private readonly sessionRepository: Repository<Session>,
     @InjectRepository(LoginAttempt)
     private readonly loginAttemptRepository: Repository<LoginAttempt>,
-  ) {}
+  ) { }
 
   async register(dto: RegisterDto): Promise<RegisterResponse> {
     const existing = await this.userService.findByEmail(dto.email);
@@ -78,7 +78,7 @@ export class AuthService {
     }
 
     const recentFailures = await this.countRecentFailures(user.id);
-    if (recentFailures >= MAX_FAILED_ATTEMPTS) {
+    if (recentFailures >= MAX_FAILED_ATTEMPTS || user.isGeblokkeerd) {
       await this.userService.setBlockedStatus(user, true);
       throw new ForbiddenException(ACCOUNT_LOCKED_MESSAGE);
     }
@@ -252,3 +252,4 @@ export class AuthService {
     await this.loginAttemptRepository.save(attempt);
   }
 }
+

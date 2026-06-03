@@ -49,10 +49,15 @@
         {
           "name": "Register",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -60,8 +65,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/register",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "register"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             },
             "description": "Maakt een nieuwe gebruiker aan. Wachtwoord wordt server-side met Argon2id gehasht. Geeft 201."
           },
@@ -81,10 +91,15 @@
         {
           "name": "Login",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -92,8 +107,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             },
             "description": "Logt in en geeft 200 met accessToken en refreshToken. Bij foute gegevens 401 met generieke melding. Na 5 mislukte pogingen wordt het account 15 minuten geblokkeerd (403)."
           },
@@ -116,10 +136,15 @@
         {
           "name": "Refresh",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -127,8 +152,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/refresh",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "refresh"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
             },
             "description": "Wisselt een geldig refresh token in voor nieuwe tokens (rotatie). Het oude refresh token wordt ongeldig."
           },
@@ -150,10 +180,15 @@
         {
           "name": "Logout",
           "request": {
-            "auth": { "type": "noauth" },
+            "auth": {
+              "type": "noauth"
+            },
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -161,8 +196,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/auth/logout",
-              "host": ["{{baseUrl}}"],
-              "path": ["auth", "logout"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
             },
             "description": "Maakt de sessie van het meegegeven refresh token ongeldig."
           },
@@ -190,8 +230,13 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/users/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
             },
             "description": "Eigen profiel en instellingen. Vereist Bearer accessToken."
           },
@@ -213,7 +258,10 @@
           "request": {
             "method": "PATCH",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -221,8 +269,13 @@
             },
             "url": {
               "raw": "{{baseUrl}}/users/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
             },
             "description": "Werk eigen profiel en/of instellingen bij. Alle velden zijn optioneel."
           },
@@ -248,7 +301,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -256,8 +312,12 @@
             },
             "url": {
               "raw": "{{baseUrl}}/devices",
-              "host": ["{{baseUrl}}"],
-              "path": ["devices"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "devices"
+              ]
             },
             "description": "Koppelt een wearable aan de ingelogde gebruiker. Slaat de nieuwe deviceId op voor Health Data > Create. macAdres moet uniek zijn (anders 409)."
           },
@@ -286,7 +346,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -294,8 +357,12 @@
             },
             "url": {
               "raw": "{{baseUrl}}/health-data",
-              "host": ["{{baseUrl}}"],
-              "path": ["health-data"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health-data"
+              ]
             },
             "description": "Slaat een meting op. De gebruiker wordt uit het JWT bepaald. Het device moet van de ingelogde gebruiker zijn, anders 403. Maak eerst een device aan via Devices > Create Device."
           },
@@ -318,11 +385,23 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/health-data?van=2026-05-01&tot=2026-06-30",
-              "host": ["{{baseUrl}}"],
-              "path": ["health-data"],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health-data"
+              ],
               "query": [
-                { "key": "van", "value": "2026-05-01", "disabled": true },
-                { "key": "tot", "value": "2026-06-30", "disabled": true }
+                {
+                  "key": "van",
+                  "value": "2026-05-01",
+                  "disabled": true
+                },
+                {
+                  "key": "tot",
+                  "value": "2026-06-30",
+                  "disabled": true
+                }
               ]
             },
             "description": "Uitsluitend de eigen metingen, met optionele datumfilters 'van' en 'tot' (vink ze aan in de Params-tab om te filteren)."
@@ -350,7 +429,10 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "body": {
               "mode": "raw",
@@ -358,8 +440,12 @@
             },
             "url": {
               "raw": "{{baseUrl}}/goals",
-              "host": ["{{baseUrl}}"],
-              "path": ["goals"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "goals"
+              ]
             },
             "description": "Maakt een persoonlijk doel aan voor de ingelogde gebruiker."
           },
@@ -382,8 +468,12 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/goals",
-              "host": ["{{baseUrl}}"],
-              "path": ["goals"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "goals"
+              ]
             },
             "description": "Eigen doelen, inclusief dagelijkse voortgang."
           },
@@ -411,8 +501,12 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/notifications",
-              "host": ["{{baseUrl}}"],
-              "path": ["notifications"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications"
+              ]
             },
             "description": "Eigen meldingen. Slaat de eerste notificationId op voor Mark as read."
           },
@@ -437,8 +531,14 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/notifications/{{notificationId}}/read",
-              "host": ["{{baseUrl}}"],
-              "path": ["notifications", "{{notificationId}}", "read"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "notifications",
+                "{{notificationId}}",
+                "read"
+              ]
             },
             "description": "Markeert een eigen melding als gelezen. Voer eerst Get Notifications uit zodat notificationId gevuld is."
           },
