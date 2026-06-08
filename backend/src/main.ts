@@ -9,6 +9,8 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import * as fs from 'fs';
+import helmet from 'helmet';
+
 
 async function bootstrap(): Promise<void> {
   const httpsOptions = {
@@ -19,7 +21,16 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
     httpsOptions,
   });
-
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+  }),);
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
