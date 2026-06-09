@@ -21,6 +21,7 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
     httpsOptions,
   });
+
   app.use(helmet({
     contentSecurityPolicy: {
       directives: {
@@ -57,5 +58,4 @@ async function bootstrap(): Promise<void> {
 
   Logger.log(`API started on port ${port} via HTTPS`, 'Bootstrap');
 }
-
 void bootstrap();
