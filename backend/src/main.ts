@@ -17,11 +17,9 @@ async function bootstrap(): Promise<void> {
     key: fs.readFileSync('./server.key'),
     cert: fs.readFileSync('./server.cert'),
   };
-
   const app = await NestFactory.create(AppModule, {
     httpsOptions,
   });
-
   app.use(helmet({
     contentSecurityPolicy: {
       directives: {
@@ -39,18 +37,15 @@ async function bootstrap(): Promise<void> {
       transform: true,
     }),
   );
-
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)),
   );
-
   app.useGlobalFilters(new AllExceptionsFilter());
 
   app.enableCors({
     origin: true,
     credentials: true,
   });
-
   const configService = app.get(ConfigService);
   const port = Number(configService.get<string>('PORT') ?? '3000');
 
