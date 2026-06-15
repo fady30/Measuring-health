@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Goal } from './entities/goal.entity';
 import { User } from '../users/entities/user.entity';
 import { CreateGoalDto } from './dto/create-goal.dto';
+import { UpdateGoalDto } from './dto/update-goal.dto';
 
 @Injectable()
 export class GoalsService {
@@ -28,5 +29,20 @@ export class GoalsService {
       relations: { progress: true },
       order: { aangemaaktOp: 'DESC' },
     });
+  }
+
+  async update(
+    userId: string,
+    goalId: string,
+    dto: UpdateGoalDto,
+  ): Promise<Goal> {
+    const goal = await this.goalRepository.findOne({
+      where: { id: goalId, user: { id: userId } },
+    });
+    if (!goal) {
+      throw new NotFoundException('Doel niet gevonden.');
+    }
+    Object.assign(goal, dto);
+    return this.goalRepository.save(goal);
   }
 }
