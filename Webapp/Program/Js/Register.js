@@ -33,15 +33,15 @@ register_form.addEventListener('submit', async (e) => {
         });
 
         const loginData = await loginResponse.json();
-        localStorage.setItem("token", loginData.accessToken);
+        setSession(loginData);
 
-        const randomMac = Array.from({length: 6}, () => 
+        const randomMac = Array.from({length: 6}, () =>
             Math.floor(Math.random() * 256).toString(16).padStart(2, '0')
         ).join(':');
 
-        const deviceResponse = await fetch("https://localhost:3000/devices", {
+        const deviceResponse = await authFetch("https://localhost:3000/devices", {
             method: "POST",
-            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${loginData.accessToken}` },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 naam: "test device",
                 macAdres: randomMac,
@@ -52,11 +52,10 @@ register_form.addEventListener('submit', async (e) => {
         const device = await deviceResponse.json();
         localStorage.setItem("deviceId", device.id);
 
-        await fetch("https://localhost:3000/goals", {
+        await authFetch("https://localhost:3000/goals", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${loginData.accessToken}`
+            "Content-Type": "application/json"
         },
         body: JSON.stringify({
             type: "stappendoel",

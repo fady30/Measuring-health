@@ -8,11 +8,7 @@ const dashboardname = document.getElementById("dashboardname")
 async function loaddashboard() {
 
     //Stepscounter
-    const token = localStorage.getItem("token")
-
-    const response = await fetch("https://localhost:3000/goals", {
-        headers: { "Authorization": `Bearer ${token}` }
-    });
+    const response = await authFetch("https://localhost:3000/goals");
 
     const goals = await response.json();
     const stappendoel = goals.find(g => g.type === "stappendoel");
@@ -26,9 +22,7 @@ async function loaddashboard() {
     ProgressbarStepscounter.style.width = StepscounterPercentage + "%";
 
     //userinfo
-    const response2 = await fetch("https://localhost:3000/users/me", {
-        headers: { "Authorization": `Bearer ${token}` }
-    });
+    const response2 = await authFetch("https://localhost:3000/users/me");
 
     const userinfo = await response2.json();
     console.log("userinfo:", userinfo);
@@ -77,16 +71,12 @@ const Dashboardchart = new Chart(ctx, {
 
 
 async function LoadSleepscore7Days() {
-    const token = localStorage.getItem("token");
-
     var today = new Date();
     var sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(today.getDate() - 7);
 
 
-    const response = await fetch("https://localhost:3000/health-data", {
-        headers: { "Authorization": `Bearer ${token}` }
-    });
+    const response = await authFetch("https://localhost:3000/health-data");
 
     const healthdata = await response.json();
     const last7days = healthdata

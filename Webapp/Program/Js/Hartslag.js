@@ -4,11 +4,7 @@ const hartslagusername = document.getElementById("hartslagusername")
 
 async function loadhartslag() {
 
-    const token = localStorage.getItem("token")
-
-    const response = await fetch("https://localhost:3000/health-data", {
-        headers: { "Authorization": `Bearer ${token}` }
-    });
+    const response = await authFetch("https://localhost:3000/health-data");
 
     const healthdata = await response.json();
     console.log(healthdata);
@@ -19,9 +15,7 @@ async function loadhartslag() {
         Hartslagtext.textContent = "Geen data";
     }
 
-    const response2 = await fetch("https://localhost:3000/users/me", {
-         headers: { "Authorization": `Bearer ${token}` }
-    });
+    const response2 = await authFetch("https://localhost:3000/users/me");
 
     const userdata = await response2.json();
     const username = userdata.naam;

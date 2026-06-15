@@ -11,14 +11,13 @@ console.log("Token:", localStorage.getItem("token"));
 
 SlaapUrenBtn.addEventListener("click",  async(e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
     const deviceId = localStorage.getItem("deviceId");
 
     const SlaapUren = document.getElementById("SlaapUrenInput").value;
 
-    const response = await fetch("https://localhost:3000/health-data", {
+    const response = await authFetch("https://localhost:3000/health-data", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             deviceId: deviceId,
             stappen: 0,
@@ -46,12 +45,9 @@ stappendoelBtn.addEventListener('click', async (e) => {
 
     const Stappendoel = document.getElementById("stappendoel").value;
 
-    const token = localStorage.getItem("token");
-    console.log("Token in goals fetch:", token);
-
-    const response = await fetch("https://localhost:3000/goals", {
+    const response = await authFetch("https://localhost:3000/goals", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             type: "stappendoel",
             streefwaarde: Number(Stappendoel)
@@ -72,14 +68,13 @@ stappendoelBtn.addEventListener('click', async (e) => {
 
 hartslagBtn.addEventListener('click', async(e) => {
     e.preventDefault();
-    const token = localStorage.getItem("token");
     const deviceId = localStorage.getItem("deviceId");
 
     const Hartslag = document.getElementById("hartslagInput").value;
 
-    const response = await fetch("https://localhost:3000/health-data", {
+    const response = await authFetch("https://localhost:3000/health-data", {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             deviceId: deviceId,
             stappen: 0,

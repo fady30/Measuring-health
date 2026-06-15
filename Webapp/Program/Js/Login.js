@@ -20,11 +20,9 @@ login_form.addEventListener('submit', async (e) => {
     const loginData = await loginResponse.json();
 
     if (loginResponse.ok) {
-        localStorage.setItem("token", loginData.accessToken);
+        setSession(loginData);
 
-        const deviceResponse = await fetch("https://localhost:3000/devices", {
-            headers: { "Authorization": `Bearer ${loginData.accessToken}` }
-        });
+        const deviceResponse = await authFetch("https://localhost:3000/devices");
 
         const devices = await deviceResponse.json();
         console.log("Devices:", devices);
