@@ -20,6 +20,8 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 COPY --from=builder /app/dist ./dist
+COPY server.key ./server.key
+COPY server.cert ./server.cert
 
 EXPOSE 3000
 

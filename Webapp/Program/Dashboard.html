@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Program/Styling/dashboard.css">
+    <link rel="stylesheet" href="../Program/Styling/sidebar.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Dashboard</title>
+</head>
+<body>
+    <div class="navigation-bar">
+        <div class="navigation-icons">
+            <img src="../Program/img/Home icon.png" id="home">
+            <img src="../Program/img/favorite.png" id="Hartslag">
+            <img src="../Program/img/Vector.png" id="Profile">
+            <button id="Admin">Admin</button>
+        </div>
+    </div>
+
+    <div class="Content-container-left">
+        <div class="title">
+            <h1 id="dashboardname">Hoi Tijl</h1>
+        </div>
+        <div class="Content-container-left-stats">
+            <div class="Stepscounter">
+                <div class="Stepscounter-title">
+                    <h3>Stappenteller</h3>
+                    <h4 id="StepscounterDashboard">1000/10000</h4>
+                </div>
+                <div class="Stepscounter-progressbar-outer">
+                    <div class="Stepscounter-progressbar-inner" id="Progressbar-Stepscounter">
+
+                    </div>
+                </div>
+                <div class="Stepscounter-progress-subtext">
+                <h2>Je hebt 6 dagen op een rij je doel bereikt.</h2>
+                </div>
+            </div>
+            <div class="Sleepingscore">
+                <div class="Sleepingscore-title">
+                    <h3>SlaapScore</h3>
+                </div>
+                <div class="Sleepingscore-Score">
+                    <h4>0</h4>
+                    <h4>10</h4>
+                </div>
+                <div class="Sleepingscore-progressbar-outer">
+                    <div class="Sleepingscore-progressbar-inner">
+
+                    </div>
+                </div>
+                <div class="Sleepingscore-progress-subtext">
+                <h2>Je score vandaag is 7.0 Ga zo door!</h2>
+                </div>
+
+            </div>
+            
+        </div>
+    </div>
+    <div class="Content-container-right">
+        <div class="title-chart">
+            <h2>Slaapgeschiedenis</h2>
+        </div>
+        <div class="chart-container">
+            <canvas id="slaapChart"></canvas>
+        </div>
+
+    </div>
+
+<script src="../Program/Js/Sidebar.js"></script>
+<script src="../Program/Js/Dashboard.js"></script>
+</body>
+</html>
