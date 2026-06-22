@@ -5,7 +5,11 @@ const ProgressbarStepscounter = document.getElementById("Progressbar-Stepscounte
 const dashboardname = document.getElementById("dashboardname")
 
 
+
+
 async function loaddashboard() {
+
+    
 
     //Stepscounter
     const response = await authFetch("https://localhost:3000/goals");
@@ -16,9 +20,9 @@ async function loaddashboard() {
 
 
 
-    const StepscounterPercentage = (1000/StepscounterDashboardGoal)*100
+    const StepscounterPercentage = (0/StepscounterDashboardGoal)*100;
 
-    StepscounterDashboard.textContent = "1000/" + StepscounterDashboardGoal;
+    StepscounterDashboard.textContent = "0/" + StepscounterDashboardGoal;
     ProgressbarStepscounter.style.width = StepscounterPercentage + "%";
 
     //userinfo
